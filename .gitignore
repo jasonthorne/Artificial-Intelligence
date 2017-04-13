@@ -1,3 +1,5 @@
+/bin/
+
 # OS
 # ===========
 .DS_Store
@@ -42,6 +44,7 @@ build/
 .settings/
 .*.md.html
 .metadata
+.classpath
 *~.nib
 local.properties
 

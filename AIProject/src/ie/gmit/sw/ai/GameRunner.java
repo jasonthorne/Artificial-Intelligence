@@ -83,7 +83,12 @@ public class GameRunner implements KeyListener{
 		//Read in the images from the resources directory as sprites. Note that each
 		//sprite will be referenced by its index in the array, e.g. a 3 implies a Bomb...
 		//Ideally, the array should dynamically created from the images... 
+		
+		
+		
 		Sprite[] sprites = new Sprite[IMAGE_COUNT];
+	
+		
 		sprites[0] = new Sprite("Hedge", "resources/hedge.png");
 		sprites[1] = new Sprite("Sword", "resources/sword.png");
 		sprites[2] = new Sprite("Help", "resources/help.png");
