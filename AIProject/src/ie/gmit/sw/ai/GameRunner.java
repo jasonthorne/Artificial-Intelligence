@@ -70,11 +70,25 @@ public class GameRunner implements KeyListener{
 
     
 	private boolean isValidMove(int row, int col){
-		if (row <= model.size() - 1 && col <= model.size() - 1 && model.get(row, col) == ' '){
+		if (row <= model.size() - 1 && col <= model.size() - 1 && (model.get(row, col) == ' ') || (model.get(row, col) == '\u0036') 
+				 ||	(model.get(row, col) == '\u0037') || (model.get(row, col) == '\u0038') || (model.get(row, col) == '\u0039')
+				 || (model.get(row, col) == '\u003A') || (model.get(row, col) == '\u003B') || (model.get(row, col) == '\u003C')
+				 || (model.get(row, col) == '\u003D'))
+		{
 			model.set(currentRow, currentCol, '\u0020');
 			model.set(row, col, '5');
 			return true;
-		}else{
+		}
+		
+		if (row <= model.size() - 1 && col <= model.size() - 1 && model.get(row, col) == '\u0036'){
+			model.set(currentRow, currentCol, '\u0020');
+			model.set(row, col, '5');
+			return true;
+		}
+		
+		
+		
+		else{
 			return false; //Can't move
 		}
 	}
