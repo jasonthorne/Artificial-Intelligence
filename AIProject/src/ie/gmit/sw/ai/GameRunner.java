@@ -3,18 +3,22 @@ package ie.gmit.sw.ai;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import ie.gmit.sw.ai.mazeAlgos.maze.Node;
 public class GameRunner implements KeyListener{
 	private static final int MAZE_DIMENSION = 100;
 	private static final int IMAGE_COUNT = 14;
+	private char[][] node;
 	private GameView view;
 	private Maze model;
 	private int currentRow;
 	private int currentCol;
+	private static int bombNumber =0;
 	
 	public GameRunner() throws Exception{
 		model = new Maze(MAZE_DIMENSION);
     	view = new GameView(model);
-    	
+    	node = model.getMaze();
     	Sprite[] sprites = getSprites();
     	view.setSprites(sprites);
     	
@@ -49,14 +53,22 @@ public class GameRunner implements KeyListener{
 	}
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT && currentCol < MAZE_DIMENSION - 1) {
-        	if (isValidMove(currentRow, currentCol + 1)) currentCol++;   		
-        }else if (e.getKeyCode() == KeyEvent.VK_LEFT && currentCol > 0) {
-        	if (isValidMove(currentRow, currentCol - 1)) currentCol--;	
-        }else if (e.getKeyCode() == KeyEvent.VK_UP && currentRow > 0) {
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT && currentCol < MAZE_DIMENSION - 1) 
+        {
+        	if (isValidMove(currentRow, currentCol + 1)) currentCol++; 
+        	bombcheck(currentRow, currentCol);
+        }else if (e.getKeyCode() == KeyEvent.VK_LEFT && currentCol > 0) 
+        {
+        	if (isValidMove(currentRow, currentCol - 1)) currentCol--;
+        	bombcheck(currentRow, currentCol);
+        }else if (e.getKeyCode() == KeyEvent.VK_UP && currentRow > 0) 
+        {
         	if (isValidMove(currentRow - 1, currentCol)) currentRow--;
-        }else if (e.getKeyCode() == KeyEvent.VK_DOWN && currentRow < MAZE_DIMENSION - 1) {
-        	if (isValidMove(currentRow + 1, currentCol)) currentRow++;        	  	
+        	bombcheck(currentRow, currentCol);
+        }else if (e.getKeyCode() == KeyEvent.VK_DOWN && currentRow < MAZE_DIMENSION - 1) 
+        {
+        	if (isValidMove(currentRow + 1, currentCol)) currentRow++;
+        	bombcheck(currentRow, currentCol);
         }else if (e.getKeyCode() == KeyEvent.VK_Z){
         	view.toggleZoom();
         }else{
@@ -78,16 +90,49 @@ public class GameRunner implements KeyListener{
 			model.set(currentRow, currentCol, '\u0020');
 			model.set(row, col, '5');
 			return true;
+		}	
+		else{
+			return false; //Can't move
 		}
-		
-		if (row <= model.size() - 1 && col <= model.size() - 1 && model.get(row, col) == '\u0036'){
-			model.set(currentRow, currentCol, '\u0020');
-			model.set(row, col, '5');
-			return true;
+	}
+	
+	public boolean bombcheck(int row, int col){
+		if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row + 1, col) == '\u0033'){
+			//model.set(currentRow + 1, currentCol, '\u0033');
+			model.set(row + 1, col, '0');
+			
+			bombNumber++;
+			System.out.println("Number of Bombs: " + bombNumber );
+			
+			return false;
 		}
-		
-		
-		
+		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row - 1, col) == '\u0033'){
+			//model.set(currentRow + 1, currentCol, '\u0033');
+			model.set(row - 1, col, '0');
+			
+			bombNumber++;
+			System.out.println("Number of Bombs: " + bombNumber );
+			
+			return false;
+		}
+		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row , col + 1) == '\u0033'){
+			//model.set(currentRow + 1, currentCol, '\u0033');
+			model.set(row, col + 1, '0');
+			
+			bombNumber++;
+			System.out.println("Number of Bombs: " + bombNumber );
+			
+			return false;
+		}
+		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row, col - 1) == '\u0033'){
+			//model.set(currentRow + 1, currentCol, '\u0033');
+			model.set(row, col - 1, '0');
+			
+			bombNumber++;
+			System.out.println("Number of Bombs: " + bombNumber );
+			
+			return false;
+		}
 		else{
 			return false; //Can't move
 		}
@@ -98,10 +143,7 @@ public class GameRunner implements KeyListener{
 		//sprite will be referenced by its index in the array, e.g. a 3 implies a Bomb...
 		//Ideally, the array should dynamically created from the images... 
 		
-		
-		
 		Sprite[] sprites = new Sprite[IMAGE_COUNT];
-	
 		
 		sprites[0] = new Sprite("Hedge", "resources/hedge.png");
 		sprites[1] = new Sprite("Sword", "resources/sword.png");
