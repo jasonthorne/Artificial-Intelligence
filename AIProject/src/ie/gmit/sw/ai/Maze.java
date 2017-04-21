@@ -1,12 +1,36 @@
 package ie.gmit.sw.ai;
 
+import java.util.Random;
+
+import ie.gmit.sw.ai.mazeAlgos.maze.MazeGenerator;
+import ie.gmit.sw.ai.mazeAlgos.maze.MazeGeneratorFactory;
+import ie.gmit.sw.ai.mazeAlgos.maze.MazeView;
+import ie.gmit.sw.ai.mazeAlgos.maze.Node;
+import ie.gmit.sw.ai.mazeAlgos.traversers.AStarTraversator;
+import ie.gmit.sw.ai.mazeAlgos.traversers.Traversator;
 
 public class Maze {
+	private Node[][] node;
+	private Node goal;
 	private char[][] maze;
+	private MazeView mv;
 	public Maze(int dimension){
 		maze = new char[dimension][dimension];
 		init();
 		buildMaze();
+		//setGoalNode();
+		
+		/*
+	 	MazeGeneratorFactory factory = MazeGeneratorFactory.getInstance();
+		MazeGenerator generator = factory.getMazeGenerator(MazeGenerator.GeneratorAlgorithm.BinaryTree, dimension, dimension);
+					
+		node = generator.getMaze();
+		goal = generator.getGoalNode();
+    	mv = new MazeView(node, goal);
+    	
+    	  Traversator t = new AStarTraversator(goal);
+          t.traverse(node, node[0][0]);
+        */
 		
 		int featureNumber = (int)((dimension * dimension) * 0.01);
 		addFeature('\u0031', '0', featureNumber); //1 is a sword, 0 is a hedge
@@ -59,6 +83,20 @@ public class Maze {
 		}		
 	}
 	
+	public void setGoalNode(){
+		Random generator = new Random();
+		int randRow = generator.nextInt(maze.length);
+		int randCol = generator.nextInt(maze[0].length);
+	
+		goal = node[randRow][randCol];
+		maze[randRow][randCol] = '\u003E'; //added this
+	}
+	
+	public Node getGoalNode(){
+		return goal;
+	}
+	
+	
 	public char[][] getMaze(){
 		return this.maze;
 	}
@@ -66,6 +104,7 @@ public class Maze {
 	public char get(int row, int col){
 		return this.maze[row][col];
 	}
+	
 	
 	public void set(int row, int col, char c){
 		this.maze[row][col] = c;

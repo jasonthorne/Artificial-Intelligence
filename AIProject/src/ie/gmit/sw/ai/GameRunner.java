@@ -3,26 +3,46 @@ package ie.gmit.sw.ai;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import ie.gmit.sw.ai.mazeAlgos.maze.MazeGenerator;
+import ie.gmit.sw.ai.mazeAlgos.maze.MazeGeneratorFactory;
+import ie.gmit.sw.ai.mazeAlgos.maze.MazeView;
+import ie.gmit.sw.ai.mazeAlgos.maze.*;
+import ie.gmit.sw.ai.mazeAlgos.traversers.Traversator;
 
-import ie.gmit.sw.ai.mazeAlgos.maze.Node;
 public class GameRunner implements KeyListener{
 	private static final int MAZE_DIMENSION = 100;
-	private static final int IMAGE_COUNT = 14;
+	private static final int IMAGE_COUNT = 15;
+	public static GameFuzzyLogic gfl = new GameFuzzyLogic();
+	private int health;
+	private int score;
+	private boolean weapon;
+	private int spider;
+	private int weaponValue;
 	private char[][] node;
 	private GameView view;
 	private Maze model;
+	private Node goal;
 	private int currentRow;
 	private int currentCol;
 	private static int bombNumber =0;
 	
 	public GameRunner() throws Exception{
+		
+		
+		//MazeGeneratorFactory factory = MazeGeneratorFactory.getInstance();
+		//MazeGenerator generator = factory.getMazeGenerator(MazeGenerator.GeneratorAlgorithm.BinaryTree, MAZE_DIMENSION, MAZE_DIMENSION);
+		
 		model = new Maze(MAZE_DIMENSION);
     	view = new GameView(model);
     	node = model.getMaze();
+    	goal = model.getGoalNode();
     	Sprite[] sprites = getSprites();
     	view.setSprites(sprites);
     	
     	placePlayer();
+    	health = 100;
+    	spider = 100;
+    	score = 100;
     	
     	Dimension d = new Dimension(GameView.DEFAULT_VIEW_SIZE, GameView.DEFAULT_VIEW_SIZE);
     	view.setPreferredSize(d);
@@ -38,6 +58,9 @@ public class GameRunner implements KeyListener{
         f.setLocation(100,100);
         f.pack();
         f.setVisible(true);
+        
+        
+  
 	}
 	
 	private void placePlayer(){   	
@@ -57,18 +80,26 @@ public class GameRunner implements KeyListener{
         {
         	if (isValidMove(currentRow, currentCol + 1)) currentCol++; 
         	bombcheck(currentRow, currentCol);
+        	swordcheck(currentRow, currentCol);
+        	helpcheck(currentRow, currentCol);
         }else if (e.getKeyCode() == KeyEvent.VK_LEFT && currentCol > 0) 
         {
         	if (isValidMove(currentRow, currentCol - 1)) currentCol--;
         	bombcheck(currentRow, currentCol);
+        	swordcheck(currentRow, currentCol);
+        	helpcheck(currentRow, currentCol);
         }else if (e.getKeyCode() == KeyEvent.VK_UP && currentRow > 0) 
         {
         	if (isValidMove(currentRow - 1, currentCol)) currentRow--;
         	bombcheck(currentRow, currentCol);
+        	swordcheck(currentRow, currentCol);
+        	helpcheck(currentRow, currentCol);
         }else if (e.getKeyCode() == KeyEvent.VK_DOWN && currentRow < MAZE_DIMENSION - 1) 
         {
         	if (isValidMove(currentRow + 1, currentCol)) currentRow++;
         	bombcheck(currentRow, currentCol);
+        	swordcheck(currentRow, currentCol);
+        	helpcheck(currentRow, currentCol);
         }else if (e.getKeyCode() == KeyEvent.VK_Z){
         	view.toggleZoom();
         }else{
@@ -86,7 +117,27 @@ public class GameRunner implements KeyListener{
 				 ||	(model.get(row, col) == '\u0037') || (model.get(row, col) == '\u0038') || (model.get(row, col) == '\u0039')
 				 || (model.get(row, col) == '\u003A') || (model.get(row, col) == '\u003B') || (model.get(row, col) == '\u003C')
 				 || (model.get(row, col) == '\u003D'))
-		{
+			{
+				if ((model.get(row, col) == '\u0036')//If current row/col is a spider
+				 ||	(model.get(row, col) == '\u0037') || (model.get(row, col) == '\u0038') || (model.get(row, col) == '\u0039')
+				 || (model.get(row, col) == '\u003A') || (model.get(row, col) == '\u003B') || (model.get(row, col) == '\u003C')
+				 || (model.get(row, col) == '\u003D'))
+			{
+				
+				if(weapon){weaponValue = 100; spider = spider - 50;}else{weaponValue = 0;};
+				System.out.println("Spider = " + spider);
+				int dmge = (int) gfl.fight(weaponValue, spider, health);
+				int injury = score - dmge;
+				health = health - injury;
+				
+				if(health <= 0){
+					System.exit(0);
+				}
+				System.out.println("Health = " + health);
+				System.out.println("Injury = " + injury);
+				System.out.println("Damage = " + dmge);
+				
+			}	
 			model.set(currentRow, currentCol, '\u0020');
 			model.set(row, col, '5');
 			return true;
@@ -98,43 +149,84 @@ public class GameRunner implements KeyListener{
 	
 	public boolean bombcheck(int row, int col){
 		if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row + 1, col) == '\u0033'){
-			//model.set(currentRow + 1, currentCol, '\u0033');
 			model.set(row + 1, col, '0');
-			
 			bombNumber++;
 			System.out.println("Number of Bombs: " + bombNumber );
-			
 			return false;
 		}
 		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row - 1, col) == '\u0033'){
-			//model.set(currentRow + 1, currentCol, '\u0033');
 			model.set(row - 1, col, '0');
-			
 			bombNumber++;
 			System.out.println("Number of Bombs: " + bombNumber );
-			
 			return false;
 		}
 		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row , col + 1) == '\u0033'){
-			//model.set(currentRow + 1, currentCol, '\u0033');
 			model.set(row, col + 1, '0');
-			
 			bombNumber++;
 			System.out.println("Number of Bombs: " + bombNumber );
-			
 			return false;
 		}
 		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row, col - 1) == '\u0033'){
-			//model.set(currentRow + 1, currentCol, '\u0033');
 			model.set(row, col - 1, '0');
-			
 			bombNumber++;
 			System.out.println("Number of Bombs: " + bombNumber );
-			
 			return false;
 		}
 		else{
-			return false; //Can't move
+			return false;
+		}
+	}
+	
+	public boolean helpcheck(int row, int col){
+		if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row + 1, col) == '\u0032'){
+			model.set(row + 1, col, '0');
+			System.out.println("got help");
+			return false;
+		}
+		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row - 1, col) == '\u0032'){
+			model.set(row - 1, col, '0');
+			System.out.println("got help");
+			return false;
+		}
+		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row , col + 1) == '\u0032'){
+			model.set(row, col + 1, '0');
+			System.out.println("got help");
+			return false;
+		}
+		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row, col - 1) == '\u0032'){
+			model.set(row, col - 1, '0');
+			System.out.println("got help");
+			return false;
+		}
+		else{
+			return false;
+		}
+	}
+	
+	
+	public boolean swordcheck(int row, int col){
+		if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row + 1, col) == '\u0031'){
+			model.set(row + 1, col, '0');
+			weapon = true;
+			return false;
+		}
+		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row - 1, col) == '\u0031'){
+			model.set(row - 1, col, '0');
+			weapon = true;
+			return false;
+		}
+		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row , col + 1) == '\u0031'){
+			model.set(row, col + 1, '0');
+			weapon = true;
+			return false;
+		}
+		else if(row <= model.size() - 1 && col <= model.size() - 1 && model.get(row, col - 1) == '\u0031'){
+			model.set(row, col - 1, '0');
+			weapon = true;
+			return false;
+		}
+		else{
+			return false; 
 		}
 	}
 	
@@ -159,6 +251,7 @@ public class GameRunner implements KeyListener{
 		sprites[11] = new Sprite("Orange Spider", "resources/orange_spider_1.png", "resources/orange_spider_2.png");
 		sprites[12] = new Sprite("Red Spider", "resources/red_spider_1.png", "resources/red_spider_2.png");
 		sprites[13] = new Sprite("Yellow Spider", "resources/yellow_spider_1.png", "resources/yellow_spider_2.png");
+		sprites[14] = new Sprite("Goal node", "resources/key.png");
 		return sprites;
 	}
 	
