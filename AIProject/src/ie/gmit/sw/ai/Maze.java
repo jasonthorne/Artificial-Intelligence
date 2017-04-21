@@ -18,19 +18,8 @@ public class Maze {
 		maze = new char[dimension][dimension];
 		init();
 		buildMaze();
-		//setGoalNode();
+		setGoalNode();
 		
-		/*
-	 	MazeGeneratorFactory factory = MazeGeneratorFactory.getInstance();
-		MazeGenerator generator = factory.getMazeGenerator(MazeGenerator.GeneratorAlgorithm.BinaryTree, dimension, dimension);
-					
-		node = generator.getMaze();
-		goal = generator.getGoalNode();
-    	mv = new MazeView(node, goal);
-    	
-    	  Traversator t = new AStarTraversator(goal);
-          t.traverse(node, node[0][0]);
-        */
 		
 		int featureNumber = (int)((dimension * dimension) * 0.01);
 		addFeature('\u0031', '0', featureNumber); //1 is a sword, 0 is a hedge
@@ -87,8 +76,8 @@ public class Maze {
 		Random generator = new Random();
 		int randRow = generator.nextInt(maze.length);
 		int randCol = generator.nextInt(maze[0].length);
-	
-		goal = node[randRow][randCol];
+		
+		//goal = node[randRow][randCol];
 		maze[randRow][randCol] = '\u003E'; //added this
 	}
 	

@@ -63,8 +63,12 @@ public class GameRunner implements KeyListener{
         f.setLocation(100,100);
         f.pack();
         f.setVisible(true);
+        //goal.setGoalNode(true);
         
+        //System.out.println("Goal Node Position: " + "Row: "+ goal.getRow() + " " + "Col: " + goal.getCol());
         
+        BestFirstTraversator t = new BestFirstTraversator(goal);    
+        t.traverse(node, node[currentRow][currentCol], view);
   
 	}
 	
@@ -74,7 +78,7 @@ public class GameRunner implements KeyListener{
     	model.set(currentRow, currentCol, '5'); //A Spartan warrior is at index 5
     	updateView(); 		
 	}
-	
+		
 	private void updateView(){
 		view.setCurrentRow(currentRow);
 		view.setCurrentCol(currentCol);
@@ -278,13 +282,8 @@ public class GameRunner implements KeyListener{
 	 public JPanel getPanel()
 	 {
 		JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
-	    JLabel end = getLabel("Game Finished !!!");
-	    
-	    //panel.add(health);
-	    /*
-	    panel.add(battles);
-	    panel.add(bombs);
-	    panel.add(swords);*/
+	    JLabel end = getLabel("You Died Game over");
+	   
 	    panel.add(end);
 
 	    return panel;
