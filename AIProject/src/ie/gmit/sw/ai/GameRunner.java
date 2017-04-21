@@ -15,8 +15,10 @@ public class GameRunner implements KeyListener{
 	private static final int IMAGE_COUNT = 15;
 	public static GameFuzzyLogic gfl = new GameFuzzyLogic();
 	GameCharacter gc = new GameCharacter();
+	private double fuzzyValue;
 	private int health;
 	private int score;
+	private int injury, damage;
 	private int enemies = 1;
 	private boolean weapon;
 	private int spider;
@@ -128,9 +130,10 @@ public class GameRunner implements KeyListener{
 			{
 			
 				if(weapon){weaponValue = 100; spider = spider - 50;}else{weaponValue = 0;};
-				System.out.println("Spider = " + spider);
-				int dmge = (int) gfl.fight(weaponValue, spider, health);
-				int injury = score - dmge;
+				//System.out.println("Spider = " + spider);
+				fuzzyValue = gfl.fight(weaponValue, spider, health);
+				damage = (int)fuzzyValue;
+				injury = score - damage;
 				health = health - injury;
 				try {
 					gc.action(health, weaponValue, enemies);
@@ -140,13 +143,15 @@ public class GameRunner implements KeyListener{
 				}
 				
 				if(health <= 0){
+					displayGUI();
 					System.exit(0);
 				}
 				
 				
 				System.out.println("Health = " + health);
 				System.out.println("Injury = " + injury);
-				System.out.println("Damage = " + dmge);
+				System.out.println("Damage = " + damage);
+				//displayGUIFight();
 				
 			}	
 			model.set(currentRow, currentCol, '\u0020');
@@ -240,6 +245,54 @@ public class GameRunner implements KeyListener{
 			return false; 
 		}
 	}
+	
+	 public void displayGUI()
+	 {
+	    JOptionPane.showMessageDialog(null, getPanel(), "END : ", JOptionPane.INFORMATION_MESSAGE);
+	 }
+	 
+	 public void displayGUIFight()
+	 {
+	    JOptionPane.showMessageDialog(null, getPanelFight(), "Fight : ", JOptionPane.INFORMATION_MESSAGE);
+	 }
+	 
+	 public JPanel getPanelFight()
+	 {
+		JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+	    JLabel Jhealth = getLabel("Health: " + health);
+	    JLabel Jinjury = getLabel("Injury: " + injury);
+	    JLabel JfuzzyValue = getLabel("Fuzzy Value: " + fuzzyValue);
+		
+	    JLabel end = getLabel("Press ok to continue !!!");
+	    
+	    //panel.add(health);
+	  
+	   // panel.add(JfuzzyValue);
+	    panel.add(Jhealth);
+	    panel.add(Jinjury);
+	    panel.add(end);
+
+	    return panel;
+	 }
+	 
+	 public JPanel getPanel()
+	 {
+		JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+	    JLabel end = getLabel("Game Finished !!!");
+	    
+	    //panel.add(health);
+	    /*
+	    panel.add(battles);
+	    panel.add(bombs);
+	    panel.add(swords);*/
+	    panel.add(end);
+
+	    return panel;
+	 }
+
+	 public JLabel getLabel(String title) {
+	   return new JLabel(title);
+	 }
 	
 	private Sprite[] getSprites() throws Exception{
 		//Read in the images from the resources directory as sprites. Note that each
