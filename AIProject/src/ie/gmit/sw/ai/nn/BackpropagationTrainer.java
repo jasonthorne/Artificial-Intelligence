@@ -10,7 +10,8 @@ package ie.gmit.sw.ai.nn;
  */
 import java.text.DecimalFormat;
 public class BackpropagationTrainer implements Trainator{
-	private static final double MOMENTUM = 0.95; //Controls the rate of descent
+	//MOMENTUM changes how fast it learns
+	private static final double MOMENTUM = 0.10; //Controls the rate of descent
 	private NeuralNetwork net;
 	private double[] err_out; //Error values in the output layer
 	private double[] err_hidden; //Error values in the hidden layer

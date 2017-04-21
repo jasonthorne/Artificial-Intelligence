@@ -21,7 +21,7 @@ public class GameFuzzyLogic {
 		fis.evaluate();
 		
 		Variable victory = functionBlock.getVariable("victory");
-        System.out.println("Value: " + victory.getValue());
+        System.out.println("Fuzzy Value: " + victory.getValue());
 		
 		 return victory.getValue();
 	}

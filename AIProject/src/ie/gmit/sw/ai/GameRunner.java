@@ -8,13 +8,16 @@ import ie.gmit.sw.ai.mazeAlgos.maze.MazeGeneratorFactory;
 import ie.gmit.sw.ai.mazeAlgos.maze.MazeView;
 import ie.gmit.sw.ai.mazeAlgos.maze.*;
 import ie.gmit.sw.ai.mazeAlgos.traversers.Traversator;
+import ie.gmit.sw.ai.nn.GameCharacter;
 
 public class GameRunner implements KeyListener{
 	private static final int MAZE_DIMENSION = 100;
 	private static final int IMAGE_COUNT = 15;
 	public static GameFuzzyLogic gfl = new GameFuzzyLogic();
+	GameCharacter gc = new GameCharacter();
 	private int health;
 	private int score;
+	private int enemies = 1;
 	private boolean weapon;
 	private int spider;
 	private int weaponValue;
@@ -123,16 +126,24 @@ public class GameRunner implements KeyListener{
 				 || (model.get(row, col) == '\u003A') || (model.get(row, col) == '\u003B') || (model.get(row, col) == '\u003C')
 				 || (model.get(row, col) == '\u003D'))
 			{
-				
+			
 				if(weapon){weaponValue = 100; spider = spider - 50;}else{weaponValue = 0;};
 				System.out.println("Spider = " + spider);
 				int dmge = (int) gfl.fight(weaponValue, spider, health);
 				int injury = score - dmge;
 				health = health - injury;
+				try {
+					gc.action(health, weaponValue, enemies);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				if(health <= 0){
 					System.exit(0);
 				}
+				
+				
 				System.out.println("Health = " + health);
 				System.out.println("Injury = " + injury);
 				System.out.println("Damage = " + dmge);
