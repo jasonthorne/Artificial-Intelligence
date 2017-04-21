@@ -37,7 +37,8 @@ Launch the command Line and navigate to the Root folder --> AIProject -->. Once 
 
 ## Authors
 
-[Sean Fitzpatrick](https://github.com/seanJosephFitzpatrick/Artificial-Intelligence)
+[Sean Fitzpatrick](https://github.com/seanJosephFitzpatrick/Artificial-Intelligence)                     
+[Jason Thorne](https://github.com/jasonthorne)                  
 
 ## License
 
