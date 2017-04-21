@@ -21,8 +21,9 @@ public class GameView extends JPanel implements ActionListener{
 	private int offset = 48; //The number 0 is ASCII 48.
 	private Color[] reds = {new Color(255,160,122), new Color(139,0,0), new Color(255, 0, 0)}; //Animate enemy "dots" to make them easier to see
 	
-	public GameView(Maze maze) throws Exception{
+	public GameView(Maze maze, Sprite[] sprites) throws Exception{
 		this.maze = maze;
+		this.sprites = sprites;
 		setBackground(Color.LIGHT_GRAY);
 		setDoubleBuffered(true);
 		timer = new Timer(300, this);
@@ -101,9 +102,5 @@ public class GameView extends JPanel implements ActionListener{
 			enemy_state = 5;
 		}
 		this.repaint();
-	}
-	
-	public void setSprites(Sprite[] sprites){
-		this.sprites = sprites;
 	}
 }

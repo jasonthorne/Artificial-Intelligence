@@ -31,18 +31,19 @@ public class GameRunner implements KeyListener{
 	private int currentCol;
 	private static int bombNumber =0;
 	
+	private Sprite[] allSprites;
+	
 	public GameRunner() throws Exception{
 		
 		
 		//MazeGeneratorFactory factory = MazeGeneratorFactory.getInstance();
 		//MazeGenerator generator = factory.getMazeGenerator(MazeGenerator.GeneratorAlgorithm.BinaryTree, MAZE_DIMENSION, MAZE_DIMENSION);
 		
-		model = new Maze(MAZE_DIMENSION);
-    	view = new GameView(model);
+    	createSprites();
+		model = new Maze(MAZE_DIMENSION, allSprites);
+    	view = new GameView(model, allSprites);
     	node = model.getMaze();
     	goal = model.getGoalNode();
-    	Sprite[] sprites = getSprites();
-    	view.setSprites(sprites);
     	
     	placePlayer();
     	health = 100;
@@ -69,6 +70,8 @@ public class GameRunner implements KeyListener{
         
         BestFirstTraversator t = new BestFirstTraversator(goal);    
         t.traverse(node, node[currentRow][currentCol], view);
+        
+        
   
 	}
 	
@@ -78,7 +81,7 @@ public class GameRunner implements KeyListener{
     	model.set(currentRow, currentCol, '5'); //A Spartan warrior is at index 5
     	updateView(); 		
 	}
-		
+	
 	private void updateView(){
 		view.setCurrentRow(currentRow);
 		view.setCurrentCol(currentCol);
@@ -111,13 +114,29 @@ public class GameRunner implements KeyListener{
         	helpcheck(currentRow, currentCol);
         }else if (e.getKeyCode() == KeyEvent.VK_Z){
         	view.toggleZoom();
-        }else{
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_P){
+        	moveSpiders();
+        }
+        else{
         	return;
         }
         
         updateView();       
     }
-    public void keyReleased(KeyEvent e) {} //Ignore
+    
+    private void moveSpiders() {
+		for(Sprite s : allSprites)
+		{
+			if(s.getName().contains("Spider")){
+				s.setCurrentCol(s.getCurrentCol() + 1);
+			}
+		}
+		
+		view.repaint();
+	}
+
+	public void keyReleased(KeyEvent e) {} //Ignore
 	public void keyTyped(KeyEvent e) {} //Ignore
 
     
@@ -293,29 +312,28 @@ public class GameRunner implements KeyListener{
 	   return new JLabel(title);
 	 }
 	
-	private Sprite[] getSprites() throws Exception{
+	private void createSprites() throws Exception{
 		//Read in the images from the resources directory as sprites. Note that each
 		//sprite will be referenced by its index in the array, e.g. a 3 implies a Bomb...
 		//Ideally, the array should dynamically created from the images... 
 		
-		Sprite[] sprites = new Sprite[IMAGE_COUNT];
+		allSprites = new Sprite[IMAGE_COUNT];
 		
-		sprites[0] = new Sprite("Hedge", "resources/hedge.png");
-		sprites[1] = new Sprite("Sword", "resources/sword.png");
-		sprites[2] = new Sprite("Help", "resources/help.png");
-		sprites[3] = new Sprite("Bomb", "resources/bomb.png");
-		sprites[4] = new Sprite("Hydrogen Bomb", "resources/h_bomb.png");
-		sprites[5] = new Sprite("Spartan Warrior", "resources/spartan_1.png", "resources/spartan_2.png");
-		sprites[6] = new Sprite("Black Spider", "resources/black_spider_1.png", "resources/black_spider_2.png");
-		sprites[7] = new Sprite("Blue Spider", "resources/blue_spider_1.png", "resources/blue_spider_2.png");
-		sprites[8] = new Sprite("Brown Spider", "resources/brown_spider_1.png", "resources/brown_spider_2.png");
-		sprites[9] = new Sprite("Green Spider", "resources/green_spider_1.png", "resources/green_spider_2.png");
-		sprites[10] = new Sprite("Grey Spider", "resources/grey_spider_1.png", "resources/grey_spider_2.png");
-		sprites[11] = new Sprite("Orange Spider", "resources/orange_spider_1.png", "resources/orange_spider_2.png");
-		sprites[12] = new Sprite("Red Spider", "resources/red_spider_1.png", "resources/red_spider_2.png");
-		sprites[13] = new Sprite("Yellow Spider", "resources/yellow_spider_1.png", "resources/yellow_spider_2.png");
-		sprites[14] = new Sprite("Goal node", "resources/key.png");
-		return sprites;
+		allSprites[0] = new Sprite("Hedge", "resources/hedge.png");
+		allSprites[1] = new Sprite("Sword", "resources/sword.png");
+		allSprites[2] = new Sprite("Help", "resources/help.png");
+		allSprites[3] = new Sprite("Bomb", "resources/bomb.png");
+		allSprites[4] = new Sprite("Hydrogen Bomb", "resources/h_bomb.png");
+		allSprites[5] = new Sprite("Spartan Warrior", "resources/spartan_1.png", "resources/spartan_2.png");
+		allSprites[6] = new Sprite("Black Spider", "resources/black_spider_1.png", "resources/black_spider_2.png");
+		allSprites[7] = new Sprite("Blue Spider", "resources/blue_spider_1.png", "resources/blue_spider_2.png");
+		allSprites[8] = new Sprite("Brown Spider", "resources/brown_spider_1.png", "resources/brown_spider_2.png");
+		allSprites[9] = new Sprite("Green Spider", "resources/green_spider_1.png", "resources/green_spider_2.png");
+		allSprites[10] = new Sprite("Grey Spider", "resources/grey_spider_1.png", "resources/grey_spider_2.png");
+		allSprites[11] = new Sprite("Orange Spider", "resources/orange_spider_1.png", "resources/orange_spider_2.png");
+		allSprites[12] = new Sprite("Red Spider", "resources/red_spider_1.png", "resources/red_spider_2.png");
+		allSprites[13] = new Sprite("Yellow Spider", "resources/yellow_spider_1.png", "resources/yellow_spider_2.png");
+		allSprites[14] = new Sprite("Goal node", "resources/key.png");
 	}
 	
 	public static void main(String[] args) throws Exception{

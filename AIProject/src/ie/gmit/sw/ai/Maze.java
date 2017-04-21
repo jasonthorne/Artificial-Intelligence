@@ -14,8 +14,10 @@ public class Maze {
 	private Node goal;
 	private char[][] maze;
 	private MazeView mv;
-	public Maze(int dimension){
+	private Sprite[] sprites;
+	public Maze(int dimension, Sprite[] sprites){
 		maze = new char[dimension][dimension];
+		this.sprites = sprites;
 		init();
 		buildMaze();
 		setGoalNode();
@@ -28,14 +30,14 @@ public class Maze {
 		addFeature('\u0034', '0', featureNumber); //4 is a hydrogen bomb, 0 is a hedge
 		
 		featureNumber = (int)((dimension * dimension) * 0.01);
-		addFeature('\u0036', '0', featureNumber); //6 is a Black Spider, 0 is a hedge
-		addFeature('\u0037', '0', featureNumber); //7 is a Blue Spider, 0 is a hedge
-		addFeature('\u0038', '0', featureNumber); //8 is a Brown Spider, 0 is a hedge
-		addFeature('\u0039', '0', featureNumber); //9 is a Green Spider, 0 is a hedge
-		addFeature('\u003A', '0', featureNumber); //: is a Grey Spider, 0 is a hedge
-		addFeature('\u003B', '0', featureNumber); //; is a Orange Spider, 0 is a hedge
-		addFeature('\u003C', '0', featureNumber); //< is a Red Spider, 0 is a hedge
-		addFeature('\u003D', '0', featureNumber); //= is a Yellow Spider, 0 is a hedge
+		addSpider('\u0036', '0', featureNumber); //6 is a Black Spider, 0 is a hedge
+		addSpider('\u0037', '0', featureNumber); //7 is a Blue Spider, 0 is a hedge
+		addSpider('\u0038', '0', featureNumber); //8 is a Brown Spider, 0 is a hedge
+		addSpider('\u0039', '0', featureNumber); //9 is a Green Spider, 0 is a hedge
+		addSpider('\u003A', '0', featureNumber); //: is a Grey Spider, 0 is a hedge
+		addSpider('\u003B', '0', featureNumber); //; is a Orange Spider, 0 is a hedge
+		addSpider('\u003C', '0', featureNumber); //< is a Red Spider, 0 is a hedge
+		addSpider('\u003D', '0', featureNumber); //= is a Yellow Spider, 0 is a hedge
 	}
 	
 	private void init(){
@@ -54,6 +56,87 @@ public class Maze {
 			
 			if (maze[row][col] == replace){
 				maze[row][col] = feature;
+				counter++;
+			}
+		}
+	}
+	
+	private void addSpider(char feature, char replace, int number){
+		int counter = 0;
+		while (counter < feature){
+			int row = (int) (maze.length * Math.random());
+			int col = (int) (maze[0].length * Math.random());
+			
+			if (maze[row][col] == replace){
+				maze[row][col] = feature;
+				
+				switch(feature)
+				{
+					case('\u0036'):
+						for(Sprite s : sprites){
+							if(s.getName().contains("Black Spider")){
+								s.setCurrentCol(col);
+								s.setCurrentRow(row);
+							}
+						}
+						break;
+					case('\u0037'):
+						for(Sprite s : sprites){
+							if(s.getName().contains("Blue Spider")){
+								s.setCurrentCol(col);
+								s.setCurrentRow(row);
+							}
+						}
+						break;
+					case('\u0038'):
+						for(Sprite s : sprites){
+							if(s.getName().contains("Brown Spider")){
+								s.setCurrentCol(col);
+								s.setCurrentRow(row);
+							}
+						}
+						break;
+					case('\u0039'):
+						for(Sprite s : sprites){
+							if(s.getName().contains("Green Spider")){
+								s.setCurrentCol(col);
+								s.setCurrentRow(row);
+							}
+						}
+						break;
+					case('\u003A'):
+						for(Sprite s : sprites){
+							if(s.getName().contains("Grey Spider")){
+								s.setCurrentCol(col);
+								s.setCurrentRow(row);
+							}
+						}
+						break;
+					case('\u003B'):
+						for(Sprite s : sprites){
+							if(s.getName().contains("Orange Spider")){
+								s.setCurrentCol(col);
+								s.setCurrentRow(row);
+							}
+						}
+						break;
+					case('\u003C'):
+						for(Sprite s : sprites){
+							if(s.getName().contains("Red Spider")){
+								s.setCurrentCol(col);
+								s.setCurrentRow(row);
+							}
+						}
+						break;
+					case('\u003D'):
+						for(Sprite s : sprites){
+							if(s.getName().contains("Yellow Spider")){
+								s.setCurrentCol(col);
+								s.setCurrentRow(row);
+							}
+						}
+						break;
+				}
 				counter++;
 			}
 		}
